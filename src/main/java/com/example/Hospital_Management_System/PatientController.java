@@ -59,4 +59,64 @@ public class PatientController {
         return listOfPatient;
     }
 
+    @GetMapping("/getInfoViaPathVariable/{patientID}")
+    public Patient getPatientInfo(@PathVariable("patientID")Integer patientID){
+        return patientDB.get(patientID);
+    }
+
+    @GetMapping("/getPatient/{age}/{disease}")
+    public List getPatientInfo(@PathVariable("age")Integer age, @PathVariable("disease") String disease){
+        List<Patient> patientList = new ArrayList<>();
+
+        for(Patient patient : patientDB.values()){
+            if(patient.getAge()>age && patient.getDisease().equals(disease))
+                patientList.add(patient);
+        }
+        return patientList;
+    }
+
+    @PutMapping("/updatePatientDetails")
+    public String updatePatientDetails(@RequestBody Patient patient){
+        if(patientDB.containsKey(patient.getPatientID())) {
+            patientDB.put(patient.getPatientID(), patient);
+            return "The patient details are updated successfully";
+        }
+        return  "Patient detail is not existing";
+    }
+    @PutMapping("/updateDisease")
+    public String updateDisease(@RequestParam("patientID") Integer patientID,@RequestParam("disease") String disease){
+        if(patientDB.containsKey(patientID)){
+            Patient p = patientDB.get(patientID);
+            p.setDisease(disease);
+            patientDB.put(patientID,p);
+            return "Updated successfully";
+        }
+        return "Patient does not exists";
+    }
+    @DeleteMapping("/deletPatient")
+    public String deletePatient(@RequestParam("patientID")Integer patientID){
+        if(patientDB.containsKey(patientID)){
+            patientDB.remove(patientID);
+            return "Deleted Successfulllyy";
+        }
+        return "Patient does not exist";
+    }
+    @DeleteMapping("/deletPatient/{patientID}")
+    public String deletePatient1(@PathVariable("patientID")Integer patientID){
+        if(patientDB.containsKey(patientID)){
+            patientDB.remove(patientID);
+            return "Deleted Successfulllyy";
+        }
+        return "Patient does not exist";
+    }
+
+
 }
+
+
+
+
+
+
+
+
